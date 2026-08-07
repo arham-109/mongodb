@@ -1,0 +1,1 @@
+import { post_schema } from "./post/index.mjs";
