@@ -5,7 +5,6 @@ import { postRoutes } from "./routes/index.mjs";
 import { database_connect } from "./libs/mongodb.mjs";
 
 const app = express();
-
 const PORT = process.env.PORT || 4000; 
 
 app.use(express.json());
@@ -17,7 +16,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1", postRoutes);
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server is running on port ${PORT}...`);
   database_connect();
 });
