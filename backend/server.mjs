@@ -9,10 +9,11 @@ const port = 4000;
 
 app.use(express.json());
 
-app.use(cors({
-  origin: "https://mongodb-todo-arham.vercel.app",
-  methods: "*"
-}));
+app.use(
+  cors({
+    origin: "https://mongodb-todo-arham.vercel.app",
+  }),
+);
 
 app.get("/", (req, res, next) => {
   res.send("Hello World");
@@ -22,5 +23,5 @@ app.use("/api/v1", postRoutes);
 
 app.listen(port, () => {
   console.log("server is running...");
-  database_connect()
+  database_connect();
 });
