@@ -17,7 +17,7 @@ app.get("/", (req, res, next) => {
 
 app.use("/api/v1", postRoutes);
 
-app.listen(port, () => {
+app.listen(Port, () => {
   console.log("server is running...");
   database_connect();
 });
