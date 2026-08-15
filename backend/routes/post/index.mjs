@@ -1,128 +1,40 @@
+import "dotenv/config";
 import express from "express";
-import { post_schema } from "../../schema/index.mjs";
-import { isValidObjectId } from "mongoose";
+import cors from "cors";
+import { postRoutes } from "./routes/index.mjs";
+import { database_connect } from "./libs/mongodb.mjs";
 
-const router = express.Router();
+const app = express();
+const PORT = process.env.PORT || 4000;
 
-router.post("/post", async (req, res) => {
-  const { title, description } = req.body;
+app.use(
+  cors({
+    origin: [
+      "https://mongodb-todo-arham.vercel.app",
+      "http://localhost:5173",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
-  try {
-    if (!title || !title.trim()) {
-      return res.status(400).json({ message: "Title is required" });
-    }
-    if (!description || !description.trim()) {
-      return res.status(400).json({ message: "Description is required" });
-    }
+app.options("*", cors());
 
-    const newPost = await post_schema.create({
-      title: title.trim(),
-      description: description.trim(),
-    });
+app.use(express.json());
 
-    return res.status(201).json({
-      message: "Post created successfully",
-      data: newPost,
-    });
-  } catch (error) {
-    console.error("POST /post Error:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
+app.get("/", (req, res) => {
+  res.send("Backend server is running!");
 });
 
-router.get("/post", async (req, res) => {
-  try {
-    const all_posts = await post_schema.find().sort({ createdAt: -1 });
-    return res.status(200).json({
-      message: "All posts fetched successfully",
-      data: all_posts,
-    });
-  } catch (error) {
-    console.error("GET /post Error:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
+app.use("/api/v1", postRoutes);
+app.use((req, res) => {
+  res.status(404).json({
+    message: `Route '${req.originalUrl}' not found on server.`,
+  });
 });
 
-router.get("/post/:postId", async (req, res) => {
-  const { postId } = req.params;
-
-  try {
-    if (!isValidObjectId(postId)) {
-      return res.status(400).json({ message: "Invalid Post ID format" });
-    }
-
-    const post = await post_schema.findById(postId);
-
-    if (!post) {
-      return res.status(404).json({ message: "Post not found" });
-    }
-
-    return res.status(200).json({
-      message: "Single post fetched successfully",
-      data: post,
-    });
-  } catch (error) {
-    console.error("GET /post/:postId Error:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server is running on port ${PORT}`);
+  database_connect();
 });
-
-// UPDATE POST
-router.put("/post/:postId", async (req, res) => {
-  const { postId } = req.params;
-  const { title, description } = req.body;
-
-  try {
-    if (!isValidObjectId(postId)) {
-      return res.status(400).json({ message: "Invalid Post ID format" });
-    }
-
-    const updatedPost = await post_schema.findByIdAndUpdate(
-      postId,
-      {
-        $set: {
-          title: title?.trim(),
-          description: description?.trim(),
-        },
-      },
-      { new: true }
-    );
-
-    if (!updatedPost) {
-      return res.status(404).json({ message: "Post not found" });
-    }
-
-    return res.status(200).json({
-      message: "Post updated successfully",
-      data: updatedPost,
-    });
-  } catch (error) {
-    console.error("PUT /post/:postId Error:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-});
-
-router.delete("/post/:postId", async (req, res) => {
-  const { postId } = req.params;
-
-  try {
-    if (!isValidObjectId(postId)) {
-      return res.status(400).json({ message: "Invalid Post ID format" });
-    }
-
-    const deletedPost = await post_schema.findByIdAndDelete(postId);
-
-    if (!deletedPost) {
-      return res.status(404).json({ message: "Post not found or already deleted" });
-    }
-
-    return res.status(200).json({
-      message: "Post deleted successfully",
-    });
-  } catch (error) {
-    console.error("DELETE /post/:postId Error:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-});
-
-export { router as postRoutes };
