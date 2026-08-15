@@ -5,11 +5,11 @@ import "dotenv/config";
 import { database_connect } from "./libs/mongodb.mjs";
 
 const app = express();
-const port = 4000;
-
-app.use(express.json());
+process.env.PORT || 4000
 
 app.use(cors());
+app.use(express.json());
+
 
 app.get("/", (req, res, next) => {
   res.send("Hello World");
