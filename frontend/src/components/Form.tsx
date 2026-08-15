@@ -110,7 +110,7 @@ export const Form: React.FC = () => {
         {posts.map((singlePost) => (
           <div
             key={singlePost._id}
-            className="border p-6 tracking-widest leading-loose rounded-lg shadow-sm min-w-[250px]"
+            className="border p-6 tracking-widest leading-loose rounded-lg shadow-sm min-w-62.5"
           >
             <h1 className="text-2xl font-bold font-mono text-center">
               {singlePost.title}
