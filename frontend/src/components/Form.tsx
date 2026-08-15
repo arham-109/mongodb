@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 import axios from "axios";
 
 interface Post {
@@ -6,6 +7,7 @@ interface Post {
   title: string;
   description: string;
 }
+const socket = io("https://mongodb-todo.up.railway.app");
 
 export const Form: React.FC = () => {
   const [title, setTitle] = useState<string>("");
@@ -16,7 +18,6 @@ export const Form: React.FC = () => {
 
   const fetchPosts = async () => {
     try {
-      // Clean GET request without query params
       const response = await axios.get(API_URL);
       setPosts(response.data.data || []);
     } catch (error) {
@@ -26,6 +27,14 @@ export const Form: React.FC = () => {
 
   useEffect(() => {
     fetchPosts();
+
+    socket.on("post_created", (newPost: Post) => {
+      setPosts((prevPosts) => [newPost, ...prevPosts]);
+    });
+
+    return () => {
+      socket.off("post_created");
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,13 +52,16 @@ export const Form: React.FC = () => {
       });
       setTitle("");
       setDesc("");
-      fetchPosts();
     } catch (error) {
       console.error("Error creating post:", error);
     }
   };
 
-  const handleEdit = async (id: string, currentTitle: string, currentDesc: string) => {
+  const handleEdit = async (
+    id: string,
+    currentTitle: string,
+    currentDesc: string,
+  ) => {
     const promptTitle = prompt("Enter Updated Title", currentTitle);
     const promptDesc = prompt("Enter Updated Description", currentDesc);
 
@@ -125,7 +137,7 @@ export const Form: React.FC = () => {
                   handleEdit(
                     singlePost._id,
                     singlePost.title,
-                    singlePost.description
+                    singlePost.description,
                   )
                 }
                 className="cursor-pointer border px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 transition-colors text-white"
