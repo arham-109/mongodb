@@ -1,23 +1,23 @@
-import express from "express";
-import { postRoutes } from "./routes/index.mjs";
-import cors from "cors";
 import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import { postRoutes } from "./routes/index.mjs";
 import { database_connect } from "./libs/mongodb.mjs";
 
 const app = express();
-process.env.PORT || 4000
 
-app.use(cors());
+const PORT = process.env.PORT || 4000; 
+
 app.use(express.json());
+app.use(cors());
 
-
-app.get("/", (req, res, next) => {
+app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
 app.use("/api/v1", postRoutes);
 
-app.listen(Port, () => {
-  console.log("server is running...");
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}...`);
   database_connect();
 });
