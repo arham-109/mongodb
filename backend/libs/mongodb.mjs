@@ -13,15 +13,13 @@ export const database_connect = async () => {
   }
 
   try {
-    await mongoose.connect(
-      URI,
-      {
-        dbName: "todo-posts",
-      },
-      console.log("mongodb is connected"),
-    );
+    await mongoose.connect(URI, {
+      dbName: "todo-posts",
+      serverSelectionTimeoutMS: 5000,
+    });
+    
+    console.log("MongoDB is successfully connected!");
   } catch (error) {
-    console.error(error);
-    console.error("mongoose is disconnected");
+    console.error("MongoDB Connection Failed:", error);
   }
 };
