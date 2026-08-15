@@ -18,13 +18,16 @@ router.post("/post", async (req, res, next) => {
       }
     }
 
-    await post_schema.create({
+  const new_post =  await post_schema.create({
       title: req.body.title,
       description: req.body.description,
     });
 
+    req.io.emit("post_created", new_post);
+
     res.send({
       message: "Post created successfully",
+      data: new_post
     });
   } catch (error) {
     console.error(error);
