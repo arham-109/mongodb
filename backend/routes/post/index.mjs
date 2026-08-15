@@ -1,143 +1,128 @@
 import express from "express";
 import { post_schema } from "../../schema/index.mjs";
 import { isValidObjectId } from "mongoose";
+
 const router = express.Router();
 
-router.post("/post", async (req, res, next) => {
-  const title = req.body.title;
-  const description = req.body.description;
+router.post("/post", async (req, res) => {
+  const { title, description } = req.body;
+
   try {
-    if (!title) {
-      return res.status(400).send({
-        message: "Title is required",
-      });
-      if (!description) {
-        return res.status(400).send({
-          message: "Description is required",
-        });
-      }
+    if (!title || !title.trim()) {
+      return res.status(400).json({ message: "Title is required" });
+    }
+    if (!description || !description.trim()) {
+      return res.status(400).json({ message: "Description is required" });
     }
 
-    await post_schema.create({
-      title: req.body.title,
-      description: req.body.description,
+    const newPost = await post_schema.create({
+      title: title.trim(),
+      description: description.trim(),
     });
 
-    res.send({
+    return res.status(201).json({
       message: "Post created successfully",
+      data: newPost,
     });
   } catch (error) {
-    console.error(error);
+    console.error("POST /post Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
 
-router.get("/post", async (req, res, next) => {
+router.get("/post", async (req, res) => {
   try {
-    const all_posts = await post_schema.find();
-    res.send({
-      message: "All post fetched successfully",
+    const all_posts = await post_schema.find().sort({ createdAt: -1 });
+    return res.status(200).json({
+      message: "All posts fetched successfully",
       data: all_posts,
     });
   } catch (error) {
-    console.error(error);
+    console.error("GET /post Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
 
-router.get("/post/:postId", async (req, res, next) => {
-  const postId = req.params.postId;
-  try {
-    if (!postId) {
-      return res.status(400).send({
-        message: "Post Id is required",
-      });
-    }
-    if (!isValidObjectId(postId)) {
-      return res.status(400).send({
-        message: "Post Id is invalid",
-      });
-    }
-    const get_posts = await post_schema.findById({ _id: req.params.postId });
+router.get("/post/:postId", async (req, res) => {
+  const { postId } = req.params;
 
-    if (!get_posts) {
-      return res.status(400).send({
-        message: "Post not found",
-      });
+  try {
+    if (!isValidObjectId(postId)) {
+      return res.status(400).json({ message: "Invalid Post ID format" });
     }
-    res.send({
-      message: "single post fetched successfully",
-      data: get_posts,
+
+    const post = await post_schema.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    return res.status(200).json({
+      message: "Single post fetched successfully",
+      data: post,
     });
   } catch (error) {
-    console.error(error);
+    console.error("GET /post/:postId Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
 
-router.put("/post/:postId", async (req, res, next) => {
-  const postId = req.params.postId;
+// UPDATE POST
+router.put("/post/:postId", async (req, res) => {
+  const { postId } = req.params;
+  const { title, description } = req.body;
+
   try {
-    if (!postId) {
-      return res.status(400).send({
-        message: "Post id is required",
-      });
-    }
     if (!isValidObjectId(postId)) {
-      return res.status(400).send({
-        message: "Post id is invalid",
-      });
+      return res.status(400).json({ message: "Invalid Post ID format" });
     }
 
-    const update_post = await post_schema.findByIdAndUpdate(
-      { _id: postId },
+    const updatedPost = await post_schema.findByIdAndUpdate(
+      postId,
       {
         $set: {
-          title: req.body.title,
-          description: req.body.description,
+          title: title?.trim(),
+          description: description?.trim(),
         },
       },
+      { new: true }
     );
 
-    if (!update_post) {
-      return res.status(404).send({
-        message: "Post not found",
-      });
+    if (!updatedPost) {
+      return res.status(404).json({ message: "Post not found" });
     }
 
-    res.send({
-      message: "post updated successfully",
+    return res.status(200).json({
+      message: "Post updated successfully",
+      data: updatedPost,
     });
   } catch (error) {
-    console.error(error);
+    console.error("PUT /post/:postId Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
 
-router.delete("/post/:postId", async (req, res, next) => {
-  const postId = req.params.postId;
+router.delete("/post/:postId", async (req, res) => {
+  const { postId } = req.params;
 
   try {
-    if (!postId) {
-      return res.status(400).send({
-        message: "Post ID is required",
-      });
-    }
     if (!isValidObjectId(postId)) {
-      return res.status(400).send({
-        message: "Post id invalid",
-      });
+      return res.status(400).json({ message: "Invalid Post ID format" });
     }
-    const delete_post = await post_schema.findByIdAndDelete({
-      _id: req.params.postId,
-    });
-    if (!delete_post) {
-      return res.status(400).send({
-        message: "Post already deleted",
-      });
+
+    const deletedPost = await post_schema.findByIdAndDelete(postId);
+
+    if (!deletedPost) {
+      return res.status(404).json({ message: "Post not found or already deleted" });
     }
-    res.send({
-      message: "post deleted successfully",
+
+    return res.status(200).json({
+      message: "Post deleted successfully",
     });
   } catch (error) {
-    console.error(error);
+    console.error("DELETE /post/:postId Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
 
-export default router;
+export { router as postRoutes };
