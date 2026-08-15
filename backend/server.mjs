@@ -9,11 +9,7 @@ const port = 4000;
 
 app.use(express.json());
 
-app.use(
-  cors({
-    origin: ["https://mongodb-todo-arham.vercel.app", "http://localhost:5173"],
-  }),
-);
+app.use(cors());
 
 app.get("/", (req, res, next) => {
   res.send("Hello World");
