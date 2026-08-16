@@ -4,19 +4,14 @@ import cors from "cors";
 import { postRoutes } from "./routes/index.mjs";
 import { database_connect } from "./libs/mongodb.mjs";
 import { Server } from "socket.io";
-import http from "http"
+import http from "http";
 
 const app = express();
 const server = http.createServer(app);
-const port = process.env.PORT || 4000;
+const port = process.env.port || 4000;
 
 app.use(express.json());
-const io = new Server(server, {
-  cors: {
-    origin: ["https://mongodb-todo-arham.vercel.app", "http://localhost:5173"],
-    methods: ["GET", "POST"],
-  },
-});
+const io = new Server(server, cors());
 
 app.use((req, res, next) => {
   req.io = io;
