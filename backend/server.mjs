@@ -3,7 +3,7 @@ import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import postRoutes from "./routes/post/index.mjs";
-import database_connect from "./libs/mongodb.mjs";
+import {database_connect} from "./libs/mongodb.mjs";
 
 const app = express();
 const server = http.createServer(app);
