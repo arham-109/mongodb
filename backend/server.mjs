@@ -7,7 +7,7 @@ import {database_connect} from "./libs/mongodb.mjs";
 
 const app = express();
 const server = http.createServer(app);
-const port = process.env.PORT || 4000;
+const port = process.env.port || 4000;
 
 const allowedOrigins = [
   "https://mongodb-todo-arham.vercel.app",
