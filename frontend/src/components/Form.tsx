@@ -52,6 +52,7 @@ export const Form: React.FC = () => {
       });
       setTitle("");
       setDesc("");
+      alert("post created successfully")
     } catch (error) {
       console.error("Error creating post:", error);
     }
@@ -85,6 +86,7 @@ export const Form: React.FC = () => {
     try {
       await axios.delete(`${API_URL}/${id}`);
       fetchPosts();
+      alert("Post deleted successfully")
     } catch (error) {
       console.error("Error deleting post:", error);
     }
