@@ -52,7 +52,7 @@ export const Form: React.FC = () => {
       });
       setTitle("");
       setDesc("");
-      alert("post created successfully")
+      alert("post created successfully");
     } catch (error) {
       console.error("Error creating post:", error);
     }
@@ -86,7 +86,7 @@ export const Form: React.FC = () => {
     try {
       await axios.delete(`${API_URL}/${id}`);
       fetchPosts();
-      alert("Post deleted successfully")
+      alert("Post deleted successfully");
     } catch (error) {
       console.error("Error deleting post:", error);
     }
@@ -94,6 +94,9 @@ export const Form: React.FC = () => {
 
   return (
     <>
+      <h1 className="text-center text-3xl font-bold font-sans m-3">
+        Generate TODO List
+      </h1>
       <form
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center p-6 max-w-lg mx-auto"

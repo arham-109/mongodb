@@ -1,12 +1,18 @@
-import { Form } from "./components/Form"
+import { Form } from "./components/Form";
+import { Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 const App = () => {
   return (
-    <>
-      <h1 className="text-center text-3xl font-bold font-sans m-3">Generate TODO List</h1>
-      <Form />
-    </>
-  )
-}
+    
+      <Routes>
+        <Route path="/" element={<Form />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+      </Routes>
+    
+  );
+};
 
-export default App
+export default App;
