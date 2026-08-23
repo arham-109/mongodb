@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 const URI = process.env.MONGO_URI;
 
 export const database_connect = async () => {
-  if (!URI) {
+  if (!URI) { 
     console.error("URI is required");
     return;
   }
