@@ -11,14 +11,14 @@ router.post("/post", async (req, res, next) => {
       return res.status(400).send({
         message: "Title is required",
       });
-      if (!description) {
-        return res.status(400).send({
-          message: "Description is required",
-        });
-      }
+    }
+    if (!description) {
+      return res.status(400).send({
+        message: "Description is required",
+      });
     }
 
-  const new_post =  await post_schema.create({
+    const new_post = await post_schema.create({
       title: req.body.title,
       description: req.body.description,
     });
@@ -27,7 +27,7 @@ router.post("/post", async (req, res, next) => {
 
     res.send({
       message: "Post created successfully",
-      data: new_post
+      data: new_post,
     });
   } catch (error) {
     console.error(error);

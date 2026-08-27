@@ -4,8 +4,9 @@ import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import postRoutes from "./routes/post/index.mjs";
-import { authRoutes } from "./routes/index.mjs";
+import { authRoutes, profileRoutes } from "./routes/index.mjs";
 import { database_connect } from "./libs/mongodb.mjs";
+import { jwtMiddleware } from "./middleware/jwt/index.mjs";
 
 const app = express();
 const server = http.createServer(app);
@@ -43,8 +44,10 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-app.use("/api/v1", postRoutes);
 app.use("/api/v1", authRoutes);
+app.use("/api/v1", jwtMiddleware);
+app.use("/api/v1", postRoutes);
+app.use("/api/v1", profileRoutes) 
 
 server.listen(port, "0.0.0.0", () => {
   console.log(`Server is running on port ${port}...`);
