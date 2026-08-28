@@ -49,10 +49,18 @@ export const Form: React.FC = () => {
     }
 
     try {
-      await axios.post(`${baseUrl}/api/v1/post`, {
-        title,
-        description: desc,
-      });
+      await axios.post(
+        `${baseUrl}/api/v1/post`,
+        {
+          title,
+          description: desc,
+        },
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
+        },
+      );
       setTitle("");
       setDesc("");
       alert("post created successfully");
