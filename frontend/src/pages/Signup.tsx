@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { baseUrl } from "../utils/cors";
 
 const Signup = () => {
   const [firstname, set_firstname] = useState("");
@@ -27,7 +28,7 @@ const Signup = () => {
         alert("Password is required");
       }
 
-      await axios.post("http://localhost:4000/api/v1/signup", {
+      await axios.post(`${baseUrl}/api/v1/signup`, {
         firstname: firstname,
         lastname: lastname,
         email: email,

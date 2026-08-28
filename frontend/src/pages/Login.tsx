@@ -1,12 +1,12 @@
 import { useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link} from "react-router-dom";
 import axios from "axios";
+import { baseUrl } from "../utils/cors";
 
 const Login = () => {
   const [email, set_email] = useState("");
   const [password, set_password] = useState("");
-  const navigate = useNavigate();
-
+  
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     try {
@@ -20,13 +20,12 @@ const Login = () => {
         return;
       }
 
-      const response = await axios.post("http://localhost:4000/api/v1/login", {
+      const response = await axios.post(`${baseUrl}/api/v1/login`, {
         email: email,
         password: password,
       });
-      console.log(response);
       alert("login successful");
-      navigate("/");
+      localStorage.setItem("token", response.data.data)
     } catch (error: any) {
       alert(error.response.data.message);
     }

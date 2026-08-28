@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import axios from "axios";
+import { baseUrl } from "../utils/cors";
 
 interface Post {
   _id: string;
   title: string;
   description: string;
 }
-const socket = io("https://mongodb-todo.up.railway.app");
+const socket = io(`${baseUrl}`);
 
 export const Form: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
   const [posts, setPosts] = useState<Post[]>([]);
 
-  const API_URL = "https://mongodb-todo.up.railway.app/api/v1/post";
-
   const fetchPosts = async () => {
     try {
-      const response = await axios.get(API_URL);
+      const response = await axios.get(`${baseUrl}/api/v1/post`);
       setPosts(response.data.data || []);
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -46,7 +45,7 @@ export const Form: React.FC = () => {
     }
 
     try {
-      await axios.post(API_URL, {
+      await axios.post(`${baseUrl}/api/v1/post`, {
         title,
         description: desc,
       });
@@ -72,7 +71,7 @@ export const Form: React.FC = () => {
     const updatedDesc = promptDesc.trim() || currentDesc;
 
     try {
-      await axios.put(`${API_URL}/${id}`, {
+      await axios.put(`${baseUrl}/${id}`, {
         title: updatedTitle,
         description: updatedDesc,
       });
@@ -84,7 +83,7 @@ export const Form: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`${API_URL}/${id}`);
+      await axios.delete(`${baseUrl}/${id}`);
       fetchPosts();
       alert("Post deleted successfully");
     } catch (error) {
@@ -95,7 +94,7 @@ export const Form: React.FC = () => {
   return (
     <>
       <h1 className="text-center text-3xl font-bold font-sans m-3">
-        Generate TODO List
+        Generate Posts
       </h1>
       <form
         onSubmit={handleSubmit}
