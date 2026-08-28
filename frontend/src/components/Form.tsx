@@ -17,7 +17,11 @@ export const Form: React.FC = () => {
 
   const fetchPosts = async () => {
     try {
-      const response = await axios.get(`${baseUrl}/api/v1/post`);
+      const response = await axios.get(`${baseUrl}/api/v1/post`, {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      });
       setPosts(response.data.data || []);
     } catch (error) {
       console.error("Error fetching posts:", error);
