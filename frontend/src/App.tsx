@@ -28,24 +28,27 @@ const App = () => {
     }
   };
   console.log({ user, isLogin });
+
+  if (isLogin === null) {
+    return <h1 className="text-2xl font-bold">Loading....</h1>;
+  }
+
   return (
     <>
-      {isLogin == null ? <h1 className="text-2xl font-bold">Loading....</h1> : null}
-
-      {isLogin == true ? (
-        <Routes>
-          <Route path="/" element={<Form />} />
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      ) : null}
-      
-      {isLogin == false ? (
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="*" element={<Navigate to="/login" />} />
-        </Routes>
-      ) : null}
+    <Routes>
+  {isLogin ? (
+    <>
+      <Route path="/" element={<Form />} />
+      <Route path="*" element={<Navigate to="/" />} />
+    </>
+  ) : (
+    <>
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="*" element={<Navigate to="/login" />} />
+    </>
+  )}
+</Routes>
     </>
   );
 };
