@@ -75,10 +75,18 @@ export const Form: React.FC = () => {
     const updatedDesc = promptDesc.trim() || currentDesc;
 
     try {
-      await axios.put(`${baseUrl}/${id}`, {
-        title: updatedTitle,
-        description: updatedDesc,
-      });
+      await axios.put(
+        `${baseUrl}/${id}`,
+        {
+          title: updatedTitle,
+          description: updatedDesc,
+        },
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
+        },
+      );
       fetchPosts();
     } catch (error) {
       console.error("Error updating post:", error);
@@ -87,7 +95,11 @@ export const Form: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`${baseUrl}/${id}`);
+      await axios.delete(`${baseUrl}/${id}`, {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      });
       fetchPosts();
       alert("Post deleted successfully");
     } catch (error) {
