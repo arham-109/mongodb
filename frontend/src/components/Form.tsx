@@ -76,7 +76,7 @@ export const Form: React.FC = () => {
 
     try {
       await axios.put(
-        `${baseUrl}/${id}`,
+        `${baseUrl}/api/v1/post/${id}`,
         {
           title: updatedTitle,
           description: updatedDesc,
@@ -95,7 +95,7 @@ export const Form: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`${baseUrl}/${id}`, {
+      await axios.delete(`${baseUrl}/api/v1/post/${id}`, {
         headers: {
           token: localStorage.getItem("token"),
         },
