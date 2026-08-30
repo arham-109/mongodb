@@ -8,7 +8,7 @@ import { store } from "./store/states";
 import { baseUrl } from "./utils/cors";
 
 const App = () => {
-  const { isLogin, user, logged_user, loggedOut_user }: any = store();
+  const { isLogin, logged_user, loggedOut_user }: any = store();
 
   useEffect(() => {
     getProfile();
@@ -27,7 +27,6 @@ const App = () => {
       loggedOut_user();
     }
   };
-  console.log({ user, isLogin });
 
   if (isLogin === null) {
     return <h1 className="text-2xl font-bold">Loading....</h1>;
@@ -35,20 +34,20 @@ const App = () => {
 
   return (
     <>
-    <Routes>
-  {isLogin ? (
-    <>
-      <Route path="/" element={<Form />} />
-      <Route path="*" element={<Navigate to="/" />} />
-    </>
-  ) : (
-    <>
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="*" element={<Navigate to="/login" />} />
-    </>
-  )}
-</Routes>
+      <Routes>
+        {isLogin === true ? (
+          <>
+            <Route path="/" element={<Form />} />
+            <Route path="*" element={<Navigate to="/" />} />
+          </>
+        ) : (
+          <>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="*" element={<Navigate to="/login" />} />
+          </>
+        )}
+      </Routes>
     </>
   );
 };

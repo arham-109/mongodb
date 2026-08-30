@@ -1,12 +1,15 @@
 import { useState, type FormEvent } from "react";
-import { Link} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { baseUrl } from "../utils/cors";
+import { store } from "../store/states";
 
 const Login = () => {
   const [email, set_email] = useState("");
   const [password, set_password] = useState("");
-  
+  const {logged_user}:any = store()
+const navigate = useNavigate()
+
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     try {
@@ -24,8 +27,11 @@ const Login = () => {
         email: email,
         password: password,
       });
+      const {token, user} = response.data.data  
       alert("login successful");
-      localStorage.setItem("token", response.data.data)
+      localStorage.setItem("token", token);
+      logged_user(user)
+      navigate("/")
     } catch (error: any) {
       alert(error.response.data.message);
     }
@@ -54,7 +60,7 @@ const Login = () => {
             />
             <div>
               <p className="text-center">
-                Don't have an account? <Link to="/signup">Signup</Link> now
+                Don't have an account? <Link to="/signup">Signup now</Link>
               </p>
             </div>
             <div className="flex justify-center ">

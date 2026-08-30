@@ -79,7 +79,7 @@ const Signup = () => {
             />
             <div>
               <p className="text-center">
-                Already have an account? <Link to="/login">Login</Link> now
+                Already have an account? <Link to="/login">Login now</Link>
               </p>
             </div>
             <div className="flex justify-center ">

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import axios from "axios";
 import { baseUrl } from "../utils/cors";
+import { Header } from "./Header";
 
 interface Post {
   _id: string;
@@ -117,7 +118,9 @@ export const Form: React.FC = () => {
 
   return (
     <>
-      <h1 className="text-center text-3xl font-bold font-sans m-3">
+    <Header />
+      <div className="mt-16">
+        <h1 className="text-center text-3xl font-bold font-sans m-3">
         Generate Posts
       </h1>
       <form
@@ -182,6 +185,7 @@ export const Form: React.FC = () => {
             </div>
           </div>
         ))}
+      </div>
       </div>
     </>
   );
