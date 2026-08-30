@@ -11,6 +11,9 @@ export const Header = () => {
       <h1 className="w-30 lg:w-full truncate">
         {user?.firstname} {user?.lastname}
       </h1>
+      <h1 className="text-center text-3xl font-bold font-sans m-3">
+        Generate Posts
+      </h1>
       <button
         onClick={handleLogout}
         className="cursor-pointer px-5 py-2 bg-gray-700 rounded-lg text-shadow-white hover:bg-gray-900 transition-colors duration-400"

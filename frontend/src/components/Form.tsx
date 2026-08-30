@@ -120,9 +120,6 @@ export const Form: React.FC = () => {
     <>
     <Header />
       <div className="mt-16">
-        <h1 className="text-center text-3xl font-bold font-sans m-3">
-        Generate Posts
-      </h1>
       <form
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center p-6 max-w-lg mx-auto"
