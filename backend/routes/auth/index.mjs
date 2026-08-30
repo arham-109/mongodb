@@ -102,10 +102,10 @@ router.post("/login", async (req, res) => {
 
     const checkPassword = await bcrypt.compare(password, findAccount.password);
 
-    if(!checkPassword){
+    if (!checkPassword) {
       return res.status(400).send({
-        message : "Invalid Credentials"
-      })
+        message: "Invalid Credentials",
+      });
     }
 
     const jwtToken = jwt.sign(
@@ -113,14 +113,18 @@ router.post("/login", async (req, res) => {
         email: findAccount.email,
         _id: findAccount._id,
       },
-      process.env.JWT_KEY, {
-        expiresIn: `24h`
-      }
+      process.env.JWT_KEY,
+      {
+        expiresIn: `24h`,
+      },
     );
 
     return res.send({
       message: "login successful",
-      data: jwtToken
+      data: {
+        token: jwtToken,
+        user: findAccount,
+      },
     });
   } catch (error) {
     console.error(error);
