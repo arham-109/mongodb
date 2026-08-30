@@ -119,7 +119,7 @@ export const Form: React.FC = () => {
   return (
     <>
     <Header />
-      <div className="mt-16">
+      <div className="mt-20">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center p-6 max-w-lg mx-auto"
