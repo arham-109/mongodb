@@ -3,23 +3,24 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { baseUrl } from "../utils/cors";
 import { store } from "../store/states";
+import { message } from "antd";
 
 const Login = () => {
   const [email, set_email] = useState("");
   const [password, set_password] = useState("");
-  const {logged_user}:any = store()
-const navigate = useNavigate()
+  const { logged_user }: any = store();
+  const navigate = useNavigate();
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     try {
       if (!email) {
-        alert("Email is required");
+        message.error("Email is required");
         return;
       }
 
       if (!password) {
-        alert("Password is required");
+        message.error("Password is required");
         return;
       }
 
@@ -27,13 +28,13 @@ const navigate = useNavigate()
         email: email,
         password: password,
       });
-      const {token, user} = response.data.data  
-      alert("login successful");
+      const { token, user } = response.data.data;
+      message.success("login successful");
       localStorage.setItem("token", token);
-      logged_user(user)
-      navigate("/")
+      logged_user(user);
+      navigate("/");
     } catch (error: any) {
-      alert(error.response.data.message);
+      message.error(error.response.data.message);
     }
   };
   return (

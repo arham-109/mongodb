@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { baseUrl } from "../utils/cors";
+import { message } from "antd";
 
 const Signup = () => {
   const [firstname, set_firstname] = useState("");
@@ -14,18 +15,18 @@ const Signup = () => {
     e.preventDefault();
     try {
       if (!firstname) {
-        alert("Firstname is required");
+        message.error("Firstname is required");
         return;
       }
       if (!lastname) {
-        alert("Lastname is required");
+        message.error("Lastname is required");
         return;
       }
       if (!email) {
-        alert("email is required");
+        message.error("email is required");
       }
       if (!password) {
-        alert("Password is required");
+        message.error("Password is required");
       }
 
       await axios.post(`${baseUrl}/api/v1/signup`, {
@@ -34,10 +35,10 @@ const Signup = () => {
         email: email,
         password: password,
       });
-      alert("Signup  successfull");
+      message.success("Signup  successfull");
       navigate("/");
     } catch (error: any) {
-      alert(error.response.data.message);
+      message.error(error.response.data.message);
     }
   };
 

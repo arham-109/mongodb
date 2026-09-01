@@ -3,6 +3,7 @@ import { io } from "socket.io-client";
 import axios from "axios";
 import { baseUrl } from "../utils/cors";
 import { Header } from "./Header";
+import { message } from "antd";
 
 interface Post {
   _id: string;
@@ -45,7 +46,7 @@ export const Form: React.FC = () => {
     e.preventDefault();
 
     if (!title.trim() || !desc.trim()) {
-      alert("Both title and description are required.");
+      message.error("Both title and description are required.");
       return;
     }
 
@@ -64,7 +65,7 @@ export const Form: React.FC = () => {
       );
       setTitle("");
       setDesc("");
-      alert("post created successfully");
+      message.success("post created successfully");
     } catch (error) {
       console.error("Error creating post:", error);
     }
@@ -96,9 +97,11 @@ export const Form: React.FC = () => {
           },
         },
       );
+      message.success("Post updated successfully");
       fetchPosts();
     } catch (error) {
       console.error("Error updating post:", error);
+      message.error("Error updating post");
     }
   };
 
@@ -110,7 +113,7 @@ export const Form: React.FC = () => {
         },
       });
       fetchPosts();
-      alert("Post deleted successfully");
+      message.success("Post deleted successfully");
     } catch (error) {
       console.error("Error deleting post:", error);
     }
@@ -118,71 +121,71 @@ export const Form: React.FC = () => {
 
   return (
     <>
-    <Header />
+      <Header />
       <div className="mt-20">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col justify-center items-center p-6 max-w-lg mx-auto"
-      >
-        <input
-          type="text"
-          value={title}
-          placeholder="Enter Title"
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full text-center border rounded m-2 p-2 hover:border-blue-500 outline-none focus:border-rose-500 transition-colors duration-300"
-        />
-        <input
-          type="text"
-          value={desc}
-          placeholder="Enter Description"
-          onChange={(e) => setDesc(e.target.value)}
-          className="w-full text-center border rounded m-2 p-2 hover:border-blue-500 outline-none focus:border-rose-500 transition-colors duration-300"
-        />
-        <button
-          type="submit"
-          className="bg-violet-500 text-white px-5 py-2 m-3 rounded-lg cursor-pointer hover:bg-violet-700 transition-colors duration-300"
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col justify-center items-center p-6 max-w-lg mx-auto"
         >
-          Create Todo
-        </button>
-      </form>
-
-      <div className="flex justify-center items-start gap-6 p-6 flex-wrap">
-        {posts.map((singlePost) => (
-          <div
-            key={singlePost._id}
-            className="border p-6 tracking-widest leading-loose rounded-lg shadow-sm min-w-62.5"
+          <input
+            type="text"
+            value={title}
+            placeholder="Enter Title"
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full text-center border rounded m-2 p-2 hover:border-blue-500 outline-none focus:border-rose-500 transition-colors duration-300"
+          />
+          <input
+            type="text"
+            value={desc}
+            placeholder="Enter Description"
+            onChange={(e) => setDesc(e.target.value)}
+            className="w-full text-center border rounded m-2 p-2 hover:border-blue-500 outline-none focus:border-rose-500 transition-colors duration-300"
+          />
+          <button
+            type="submit"
+            className="bg-violet-500 text-white px-5 py-2 m-3 rounded-lg cursor-pointer hover:bg-violet-700 transition-colors duration-300"
           >
-            <h1 className="text-2xl font-bold font-mono text-center">
-              {singlePost.title}
-            </h1>
-            <p className="font-bold text-base text-center text-gray-700">
-              {singlePost.description}
-            </p>
-            <div className="flex justify-center items-center gap-4 text-base mt-3">
-              <button
-                type="button"
-                onClick={() =>
-                  handleEdit(
-                    singlePost._id,
-                    singlePost.title,
-                    singlePost.description,
-                  )
-                }
-                className="cursor-pointer border px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 transition-colors text-white"
-              >
-                Edit
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDelete(singlePost._id)}
-                className="cursor-pointer px-4 py-2 rounded-md bg-rose-600 text-white hover:bg-rose-700 transition-colors"
-              >
-                Delete
-              </button>
+            Create Todo
+          </button>
+        </form>
+
+        <div className="flex justify-center items-start gap-6 p-6 flex-wrap">
+          {posts.map((singlePost) => (
+            <div
+              key={singlePost._id}
+              className="border p-6 tracking-widest leading-loose rounded-lg shadow-sm min-w-62.5"
+            >
+              <h1 className="text-2xl font-bold font-mono text-center">
+                {singlePost.title}
+              </h1>
+              <p className="font-bold text-base text-center text-gray-700">
+                {singlePost.description}
+              </p>
+              <div className="flex justify-center items-center gap-4 text-base mt-3">
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleEdit(
+                      singlePost._id,
+                      singlePost.title,
+                      singlePost.description,
+                    )
+                  }
+                  className="cursor-pointer border px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 transition-colors text-white"
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(singlePost._id)}
+                  className="cursor-pointer px-4 py-2 rounded-md bg-rose-600 text-white hover:bg-rose-700 transition-colors"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
       </div>
     </>
   );

@@ -1,4 +1,5 @@
 import { store } from "../store/states";
+import { Link } from "react-router-dom";
 
 export const Header = () => {
   const { loggedOut_user, user }: any = store();
@@ -8,8 +9,8 @@ export const Header = () => {
   };
   return (
     <div className="flex justify-between items-center p-3 bg-gray-500/60 backdrop-blur-md text-shadow-gray-700 text-base uppercase font-bold fixed top-0 left-0 w-full">
-      <h1 className="w-30 lg:max-w-fit truncate">
-        {user?.firstname} {user?.lastname}
+      <h1 className="w-30 lg:max-w-full truncate lg:overflow-visible">
+        <Link to="/profile">{user?.firstname} {user?.lastname}</Link>
       </h1>
       <h1 className="text-center text-3xl font-bold font-sans m-3">
         Generate Posts

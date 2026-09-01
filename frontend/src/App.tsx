@@ -6,6 +6,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { store } from "./store/states";
 import { baseUrl } from "./utils/cors";
+import Profile from "./pages/Profile";
 
 const App = () => {
   const { isLogin, logged_user, loggedOut_user }: any = store();
@@ -38,6 +39,7 @@ const App = () => {
         {isLogin === true ? (
           <>
             <Route path="/" element={<Form />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<Navigate to="/" />} />
           </>
         ) : (
