@@ -42,7 +42,8 @@ router.put("/profile", async (req, res, next) => {
   } catch (error) {
     console.error(error);
     return res.status(500).send({
-      message: "Internal server error",
+      message: "Internal server error"
+      
     });
   }
 });
