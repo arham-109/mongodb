@@ -11,6 +11,7 @@ const Profile = () => {
   const [currentPassword, set_currentPassword] = useState("");
   const [newPassword, set_newPassword] = useState("");
   const [repPassword, set_repPassword] = useState("");
+
   const profile_name = async (e: FormEvent) => {
     e.preventDefault();
     const firstname = prompt("Enter Firstname", user.firstname);
@@ -70,18 +71,54 @@ const Profile = () => {
       message.error(error.response.data.message);
     }
   };
+  const uploadFiles = async (file: any) => {
+    if (!file) return;
+
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+      const response = await axios.put(
+        `${baseUrl}/api/v1/profile-picture`,
+        formData,
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
+        },
+      );
+      message.success(response.data.message);
+      logged_user({
+        ...user,
+        profile_picture: response.data.url,
+      });
+    } catch (error: any) {
+      console.error(error);
+      message.error(error.response.data.message);
+    }
+  };
+
   return (
     <div>
       <div className="flex flex-col justify-center items-center mb-30">
         <h1 className="text-4xl p-4 w-full font-bold text-center">
           My Profile
         </h1>
-        <div className="p-4">
+        <div className="p-4 relative">
           <img
             src={user.profile_picture || null_picture}
             alt="profile"
             className="w-64 h-64 border rounded-full"
           />
+          <input
+            type="file"
+            id="picture"
+            className="hidden"
+            accept="image/*"
+            onChange={(e: any) => uploadFiles(e.target.files[0])}
+          />
+          <label htmlFor="picture">
+            <MdModeEditOutline className="absolute right-10 bottom-8 bg-slate-200 rounded-full h-10 w-10 p-3 cursor-pointer" />
+          </label>
         </div>
         <h1 className="font-bold text-2xl flex flex-row gap-2 justify-center">
           {user.firstname} {user.lastname}
@@ -117,7 +154,12 @@ const Profile = () => {
             onChange={(e: any) => set_repPassword(e.target.value)}
             value={repPassword}
           />
-          <button type="submit" className="mt-3 px-5 py-1 bg-blue-400 text-white rounded-md cursor-pointer hover:bg-green-500 transition-colors duration-400">Update Password</button>
+          <button
+            type="submit"
+            className="mt-3 px-5 py-1 bg-blue-400 text-white rounded-md cursor-pointer hover:bg-green-500 transition-colors duration-400"
+          >
+            Update Password
+          </button>
         </form>
       </div>
     </div>
