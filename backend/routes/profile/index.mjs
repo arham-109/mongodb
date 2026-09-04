@@ -1,6 +1,9 @@
 import express from "express";
 import { user_schema } from "../../schema/index.mjs";
 import bcrypt from "bcryptjs";
+import { multer_middleware } from "../../libs/multer.mjs";
+import { cloudinaryUpload } from "../../libs/cloudinary.mjs";
+import path from "node:path";
 
 const router = express.Router();
 
@@ -25,7 +28,7 @@ router.put("/profile", async (req, res, next) => {
     const user = await user_schema.findOne({ _id: req.currentUser._id });
 
     if (!user) {
-      return res.status.send({
+      return res.status(404).send({
         message: "User not found ",
       });
     }
@@ -42,8 +45,7 @@ router.put("/profile", async (req, res, next) => {
   } catch (error) {
     console.error(error);
     return res.status(500).send({
-      message: "Internal server error"
-      
+      message: "Internal server error",
     });
   }
 });
@@ -59,7 +61,7 @@ router.put("/password", async (req, res, next) => {
     );
 
     if (!confirm_password) {
-     return res.status(400).send({
+      return res.status(400).send({
         message: "current password invalid",
       });
     }
@@ -75,8 +77,8 @@ router.put("/password", async (req, res, next) => {
       },
     );
     return res.send({
-        message : "password updated"
-    })
+      message: "password updated",
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).send({
@@ -84,5 +86,58 @@ router.put("/password", async (req, res, next) => {
     });
   }
 });
+
+router.put(
+  "/profile-picture",
+  multer_middleware.any(),
+  async (req, res, next) => {
+    try {
+      const file = req.files[0];
+
+      if (!file) {
+        return res.status(400).send({
+          message: "file is required",
+        });
+      }
+
+      const image_extensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
+      const file_extension = path.extname(file.originalname).toLowerCase();
+      const is_image =
+        file.mimetype.startsWith("image/") ||
+        (file.mimetype === "application/octet-stream" &&
+          image_extensions.includes(file_extension));
+
+      if (!is_image) {
+        return res.status(400).send({
+          message: "Only image is required",
+        });
+      }
+      if (file.size > 1000000) {
+        return res.status(400).send({
+          message: "File size with only 1mb is required",
+        });
+      }
+
+      const file_resp = await cloudinaryUpload(file);
+      await user_schema.findByIdAndUpdate(
+        req.currentUser._id ,
+        {
+          $set: {
+            profile_picture: file_resp.url,
+          },
+        },
+      );
+      return res.send({
+        message: "Profile picture updated",
+        url: file_resp.url,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({
+        message: "Internal server error",
+      });
+    }
+  },
+);
 
 export default router;

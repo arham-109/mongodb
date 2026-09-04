@@ -44,10 +44,12 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-app.use("/api/v1", authRoutes);
-app.use("/api/v1", jwtMiddleware);
-app.use("/api/v1", postRoutes);
-app.use("/api/v1", profileRoutes) 
+app.use("/api/v1", 
+authRoutes,
+jwtMiddleware,
+postRoutes,
+profileRoutes
+);
 
 server.listen(port, "0.0.0.0", () => {
   console.log(`Server is running on port ${port}...`);
