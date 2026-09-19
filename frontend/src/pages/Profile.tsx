@@ -5,12 +5,14 @@ import { useState, type FormEvent } from "react";
 import axios from "axios";
 import { baseUrl } from "../utils/cors";
 import { message } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const { user, logged_user }: any = store();
   const [currentPassword, set_currentPassword] = useState("");
   const [newPassword, set_newPassword] = useState("");
   const [repPassword, set_repPassword] = useState("");
+  const navigate = useNavigate();
 
   const profile_name = async (e: FormEvent) => {
     e.preventDefault();
@@ -99,6 +101,12 @@ const Profile = () => {
 
   return (
     <div>
+      <button
+        onClick={() => navigate(-1)}
+        className="px-7 py-1 bg-rose-500 text-white cursor-pointer rounded-md m-3 hover:bg-emerald-500 transition-colors duration-400"
+      >
+        Back
+      </button>
       <div className="flex flex-col justify-center items-center mb-30">
         <h1 className="text-4xl p-4 w-full font-bold text-center">
           My Profile

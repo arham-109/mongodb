@@ -4,11 +4,22 @@ import axios from "axios";
 import { baseUrl } from "../utils/cors";
 import { Header } from "./Header";
 import { message } from "antd";
+import moment from "moment";
+import { AiOutlineLike as Like } from "react-icons/ai";
+import { FaRegComment as Comment } from "react-icons/fa6";
+import { PiShareFatThin as Share } from "react-icons/pi";
 
 interface Post {
   _id: string;
   title: string;
   description: string;
+  createdAt: string | number;
+  profile_picture: any;
+  userID: {
+    firstname: string;
+    lastname: string;
+    profile_picture: string;
+  };
 }
 const socket = io(`${baseUrl}`);
 
@@ -149,18 +160,37 @@ export const Form: React.FC = () => {
           </button>
         </form>
 
-        <div className="flex justify-center items-start gap-6 p-6 flex-wrap">
+        <div className="flex flex-col justify-center items-center gap-6 p-6">
           {posts.map((singlePost) => (
             <div
               key={singlePost._id}
-              className="border p-6 tracking-widest leading-loose rounded-lg shadow-sm min-w-62.5"
+              className="border p-6  leading-loose rounded-lg shadow-sm w-full flex flex-col justify-start items-start"
             >
-              <h1 className="text-2xl font-bold font-mono text-center">
+              <div className="flex justify-center items-center gap-4">
+                <img
+                  className="h-12 w-12 rounded-full"
+                  src={singlePost.userID.profile_picture}
+                />
+                <div className="flex flex-col leading-tight">
+                  <h1 className="font-bold">
+                    {singlePost.userID.firstname} {singlePost.userID.lastname}
+                  </h1>
+                  <h1 className="text-gray-500 text-sm">
+                    {moment(singlePost.createdAt).fromNow()}
+                  </h1>
+                </div>
+              </div>
+              <h1 className="text-2xl font-bold font-mono text-center mt-3">
                 {singlePost.title}
               </h1>
               <p className="font-bold text-base text-center text-gray-700">
                 {singlePost.description}
               </p>
+              <div className="flex gap-7 mt-2">
+                <Like className="h-5 w-5 text-black/70 cursor-pointer" />
+                <Comment className="h-5 w-5 text-black/50 cursor-pointer" />
+                <Share className="h-5 w-5 cursor-pointer" />
+              </div>
               <div className="flex justify-center items-center gap-4 text-base mt-3">
                 <button
                   type="button"
