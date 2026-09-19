@@ -7,10 +7,11 @@ import postRoutes from "./routes/post/index.mjs";
 import { authRoutes, profileRoutes } from "./routes/index.mjs";
 import { database_connect } from "./libs/mongodb.mjs";
 import { jwtMiddleware } from "./middleware/jwt/index.mjs";
+import { limiter } from "./middleware/rate limiter/index.mjs";
 
 const app = express();
 const server = http.createServer(app);
-const port = process.env.port || 4000;
+const PORT = process.env.PORT || 4000;
 
 const allowedOrigins = [
   "https://mongodb-todo-arham.vercel.app",
@@ -35,6 +36,8 @@ const io = new Server(server, {
   },
 });
 
+app.use(limiter)
+
 app.use((req, res, next) => {
   req.io = io;
   next();
@@ -51,7 +54,7 @@ postRoutes,
 profileRoutes
 );
 
-server.listen(port, "0.0.0.0", () => {
-  console.log(`Server is running on port ${port}...`);
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server is running on port ${PORT}...`);
   database_connect();
 });

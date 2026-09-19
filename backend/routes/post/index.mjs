@@ -21,22 +21,28 @@ router.post("/post", async (req, res, next) => {
     const new_post = await post_schema.create({
       title: req.body.title,
       description: req.body.description,
+      userID: req.currentUser?._id,
     });
 
-    req.io.emit("post_created", new_post);
+    const populated_post = await new_post.populate("userID");
+
+    req.io.emit("post_created", populated_post);
 
     res.send({
       message: "Post created successfully",
-      data: new_post,
+      data: populated_post,
     });
   } catch (error) {
     console.error(error);
+    res.status(500).send({
+      message: "Intrernal Server Error",
+    });
   }
 });
 
 router.get("/post", async (req, res, next) => {
   try {
-    const all_posts = await post_schema.find();
+    const all_posts = await post_schema.find().populate("userID");
     res.send({
       message: "All post fetched successfully",
       data: all_posts,
