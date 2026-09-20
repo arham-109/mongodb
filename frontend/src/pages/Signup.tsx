@@ -23,10 +23,12 @@ const Signup = () => {
         return;
       }
       if (!email) {
-        message.error("email is required");
+        message.error("Email is required");
+        return;
       }
       if (!password) {
         message.error("Password is required");
+        return;
       }
 
       await axios.post(`${baseUrl}/api/v1/signup`, {
@@ -65,14 +67,14 @@ const Signup = () => {
               className="border border-blue-400 max-w-md rounded-lg outline-none p-2 hover:border-rose-600 focus:border-green-700 transition-colors duration-400 md: min-w-md text-center text-base"
             />
             <input
-              type="text"
+              type="email"
               placeholder="Enter Your Email"
               value={email}
               onChange={(e) => set_email(e.target.value)}
               className="border border-blue-400 max-w-md rounded-lg outline-none p-2 hover:border-rose-600 focus:border-green-700 transition-colors duration-400 md: min-w-md text-center text-base"
             />
             <input
-              type="text"
+              type="password"
               value={password}
               onChange={(e) => set_password(e.target.value)}
               placeholder="Enter your password"

@@ -46,14 +46,14 @@ const Login = () => {
               Login
             </h1>
             <input
-              type="text"
+              type="email"
               placeholder="Enter Your Email"
               value={email}
               onChange={(e) => set_email(e.target.value)}
               className="border border-blue-400 max-w-md rounded-lg outline-none p-2 hover:border-rose-600 focus:border-green-700 transition-colors duration-400 md: min-w-md text-center text-base"
             />
             <input
-              type="text"
+              type="password"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => set_password(e.target.value)}
