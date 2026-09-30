@@ -126,7 +126,7 @@ const Profile = () => {
         getAuthHeader(),
       );
       setCurrentPassword("");
-      setNewPassword("");
+      setNewPassword("")
       setRepPassword("");
       message.success(response.data.message);
     } catch (error) {
