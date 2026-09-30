@@ -10,6 +10,9 @@ import Profile from "./pages/Profile";
 
 const App = () => {
   const { isLogin, logged_user, loggedOut_user }: any = store();
+  const getAuthHeader = () => ({
+  headers: { token: localStorage.getItem("token") },
+});
 
   useEffect(() => {
     getProfile();
@@ -17,11 +20,9 @@ const App = () => {
 
   const getProfile = async () => {
     try {
-      const response = await axios.get(`${baseUrl}/api/v1/profile`, {
-        headers: {
-          token: localStorage.getItem("token"),
-        },
-      });
+      const response = await axios.get(`${baseUrl}/api/v1/profile`, 
+        getAuthHeader(),
+      );
       logged_user(response.data.data);
     } catch (error) {
       console.error(error);
@@ -32,6 +33,7 @@ const App = () => {
   if (isLogin === null) {
     return <h1 className="text-2xl font-bold">Loading....</h1>;
   }
+  
 
   return (
     <>
@@ -40,6 +42,7 @@ const App = () => {
           <>
             <Route path="/" element={<Form />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/:userId" element={<Profile />} />
             <Route path="*" element={<Navigate to="/" />} />
           </>
         ) : (
