@@ -95,6 +95,20 @@ router.put("/post/:postId", async (req, res, next) => {
       });
     }
 
+      const user_post = await post_schema.findOne({ _id: postId });
+
+    if (!user_post) {
+      return res.status(404).send({
+        message: "Post not Found",
+      });
+    }
+
+    if (req.currentUser._id.toString() !== user_post.userID.toString()) {
+      return res.status(401).send({
+        message: "You cannot delete this post",
+      });
+    }
+
     const update_post = await post_schema.findByIdAndUpdate(
       { _id: postId },
       {
@@ -133,6 +147,21 @@ router.delete("/post/:postId", async (req, res, next) => {
         message: "Post id invalid",
       });
     }
+
+    const user_post = await post_schema.findOne({ _id: postId });
+
+    if (!user_post) {
+      return res.status(404).send({
+        message: "Post not Found",
+      });
+    }
+
+    if (req.currentUser._id.toString() !== user_post.userID.toString()) {
+      return res.status(401).send({
+        message: "You cannot delete this post",
+      });
+    }
+
     const delete_post = await post_schema.findByIdAndDelete({
       _id: req.params.postId,
     });

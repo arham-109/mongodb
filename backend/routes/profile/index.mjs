@@ -1,5 +1,5 @@
 import express from "express";
-import { user_schema } from "../../schema/index.mjs";
+import { post_schema, user_schema } from "../../schema/index.mjs";
 import bcrypt from "bcryptjs";
 import { multer_middleware } from "../../libs/multer.mjs";
 import { cloudinaryUpload } from "../../libs/cloudinary.mjs";
@@ -7,7 +7,44 @@ import path from "node:path";
 
 const router = express.Router();
 
-router.get("/profile", (req, res, next) => {
+router.get("/profile/:userId", async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+
+    const user = await user_schema
+      .findOne({ _id: userId })
+      .select(`-password -email -resetToken`);
+
+    return res.send({
+      message: "User profile fetched successfully",
+      data: user,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({
+      message: "Internal Server error",
+    });
+  }
+});
+
+router.get("/profile/post/:userId", async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+    const all_posts = await post_schema.find({ userID: userId }).populate("userID", "firstname lastname profile_picture");
+
+    return res.send({
+      message: "profile Post fetched Successfully",
+      data: all_posts,
+    });
+  } catch (error) {
+    console.error(error); 
+    return res.status(500).send({
+      message: "Failed to fetch posts",
+    });
+  }
+});
+
+router.get("/profile", async (req, res, next) => {
   try {
     return res.send({
       message: "Profile fetched successfully",
@@ -119,14 +156,11 @@ router.put(
       }
 
       const file_resp = await cloudinaryUpload(file);
-      await user_schema.findByIdAndUpdate(
-        req.currentUser._id ,
-        {
-          $set: {
-            profile_picture: file_resp.url,
-          },
+      await user_schema.findByIdAndUpdate(req.currentUser._id, {
+        $set: {
+          profile_picture: file_resp.url,
         },
-      );
+      });
       return res.send({
         message: "Profile picture updated",
         url: file_resp.url,
